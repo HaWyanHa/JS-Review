@@ -9,16 +9,29 @@ GAME RULES:
 
 */
 
-var scores, roundScore, activePlayer, dice, gamePlaying;
+
+
+var scores, roundScore, activePlayer, dice, gamePlaying, diceRoll, diceRoll1, diceRoll2, winScore;
 gamePlaying = true;
 init();
+diceRoll = true; //first roll is set to true
+console.log(diceRoll);
+
 
 
 document.querySelector('.btn-roll').addEventListener('click', function() {  //using an anymous function
 	if(gamePlaying) {
 
+		
 		//1. Randon number
 		var dice = Math.floor(Math.random() * 6) + 1;  //because setting var dice here, only this function has acces to 'dice variable'
+
+		if (diceRoll) {
+			diceRoll1 = dice;
+		} else {
+			diceRoll2 = dice;
+		}
+		console.log(diceRoll1, diceRoll2);
 
 		//2. Display the result
 		var diceDOM = document.querySelector('.dice');
@@ -34,6 +47,13 @@ document.querySelector('.btn-roll').addEventListener('click', function() {  //us
 			//next player
 			nextPlayer();
 		}
+
+		if (diceRoll1 === 6 && diceRoll2 ===6){
+			nextPlayer();
+		}
+
+		diceRoll = !diceRoll;
+		console.log(diceRoll);
 	}
 });
 
@@ -46,7 +66,7 @@ document.querySelector('.btn-hold').addEventListener('click', function(){
 		
 
 		//check if player won the game
-		if (scores[activePlayer] >= 20){
+		if (scores[activePlayer] >= winScore){
 			document.getElementById('name-' + activePlayer).textContent = 'Winner';
 			document.querySelector('.dice').style.display = 'none';
 			document.querySelector('.player-' + activePlayer + '-panel').classList.add('winner');
@@ -88,14 +108,14 @@ function init(){
 
 function nextPlayer() {
 	activePlayer === 0 ? activePlayer = 1 : activePlayer = 0;
-			/*if(activePlayer === 0) {
+			/* if(activePlayer === 0) {
 				activePlayer = 1;
 			} else {
 				activePlayer = 0;
-			}*/
+			} */
 		roundScore = 0;
 
-		document.getElementById('current-0').textContent = '0';   //
+		document.getElementById('current-0').textContent = '0';
 		document.getElementById('current-1').textContent = '0';
 
 		//document.querySelector('.player-0-panel').classList.remove('active');
@@ -105,13 +125,6 @@ function nextPlayer() {
 	
 		document.querySelector('.dice').style.display = 'none';
 }
-
-
-
-
-
-
-
 
 
 
