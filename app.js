@@ -9,50 +9,53 @@ GAME RULES:
 
 */
 
-var scores, roundScore, activePlayer, dice;
-
+var scores, roundScore, activePlayer, dice, gamePlaying;
+gamePlaying = true;
 init();
 
 
 document.querySelector('.btn-roll').addEventListener('click', function() {  //using an anymous function
+	if(gamePlaying) {
 
-	//1. Randon number
-	var dice = Math.floor(Math.random() * 6) + 1;  //because setting var dice here, only this function has acces to 'dice variable'
+		//1. Randon number
+		var dice = Math.floor(Math.random() * 6) + 1;  //because setting var dice here, only this function has acces to 'dice variable'
 
-	//2. Display the result
-	var diceDOM = document.querySelector('.dice');
-	diceDOM.style.display = 'block';
-	diceDOM.src = 'dice-' + dice + '.png';
+		//2. Display the result
+		var diceDOM = document.querySelector('.dice');
+		diceDOM.style.display = 'block';
+		diceDOM.src = 'dice-' + dice + '.png';
 
-	//3. Update the round score IF the rolled number was not a 1
-	if (dice !== 1) {
-		//add score
-		roundScore += dice; //roundScore = roundScore + dice
-		document.querySelector('#current-' + activePlayer).textContent = roundScore;
-	} else {
-		//next player
-		nextPlayer();
+		//3. Update the round score IF the rolled number was not a 1
+		if (dice !== 1) {
+			//add score
+			roundScore += dice; //roundScore = roundScore + dice
+			document.querySelector('#current-' + activePlayer).textContent = roundScore;
+		} else {
+			//next player
+			nextPlayer();
+		}
 	}
-
 });
 
 document.querySelector('.btn-hold').addEventListener('click', function(){
-	//add current score to player's global score
-	scores[activePlayer] += roundScore; //scores[activePlayer] = scores[activePlayer] + roundScore; 
-	// update UI 
-	document.querySelector('#score-' + activePlayer).textContent = scores[activePlayer];
-	
+	if(gamePlaying) {
+		//add current score to player's global score
+		scores[activePlayer] += roundScore; //scores[activePlayer] = scores[activePlayer] + roundScore; 
+		// update UI 
+		document.querySelector('#score-' + activePlayer).textContent = scores[activePlayer];
+		
 
-	//check if player won the game
-	if (scores[activePlayer] >= 10){
-		document.getElementById('name-' + activePlayer).textContent = 'Winner';
-		document.querySelector('.dice').style.display = 'none';
-		document.querySelector('.player-' + activePlayer + '-panel').classList.add('winner');
-		document.querySelector('.player-' + activePlayer + '-panel').classList.remove('active');
-
-	} else {
-		nextPlayer();
-		}
+		//check if player won the game
+		if (scores[activePlayer] >= 20){
+			document.getElementById('name-' + activePlayer).textContent = 'Winner';
+			document.querySelector('.dice').style.display = 'none';
+			document.querySelector('.player-' + activePlayer + '-panel').classList.add('winner');
+			document.querySelector('.player-' + activePlayer + '-panel').classList.remove('active');
+			gamePlaying = false;
+		} else {
+			nextPlayer();
+			}
+	}
 });
 
 document.querySelector('.btn-new').addEventListener('click', init);
@@ -61,6 +64,7 @@ function init(){
 	scores = [0,0];
 	roundScore = 0;
 	activePlayer = 0;
+	gamePlaying = true;
 
 	//document.querySelector('#current-' + activePlayer).textContent = dice;  //because of type coercion, we get 'current-0' as the query selector.
 	//document.querySelector('#current-' + activePlayer).innerHTML = '<em>' + dice + '</em>';//must be a string for html, so it doesn't think it's javascript
